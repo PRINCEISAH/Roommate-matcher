@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "435293945306",
+    "firebase_url": "https://room-matematcher.firebaseio.com",
+    "project_id": "room-matematcher",
+    "storage_bucket": "room-matematcher.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435293945306:android:1dd87423d11915102fd4e3",
+        "android_client_info": {
+          "package_name": "com.example.roommatematcher"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435293945306-ltlhin5u5dfoaha50polfcgkgqeoslhd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNqcP7D3Z9uFNdtBqS3zti6J9SgHxZH1Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435293945306-ltlhin5u5dfoaha50polfcgkgqeoslhd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
