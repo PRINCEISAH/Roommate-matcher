@@ -28,6 +28,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -36,16 +37,28 @@ class MyApp extends StatelessWidget {
       // routes: AppRoute().routes,
       //navigatorObservers: [AppRoute()],
       //onGenerateRoute: AppRoute().generateRoute,
-      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+      home: Scaffold(
+        key: _scaffoldKey,
+        body: BlocConsumer<AuthenticationBloc, AuthenticationState>(
           builder: (context, AuthenticationState state) {
-        if (state is Authenticated) {
-          return RoommateMatcherHomePage();
-        } else if (state is InitialAuthState) {
-          return SplashScreen();
-        } else {
-          return LoginPage();
-        }
-      }),
+            if (state is Authenticated) {
+              return RoommateMatcherHomePage();
+            } else if (state is InitialAuthState) {
+              return SplashScreen();
+            } else {
+              return LoginPage();
+            }
+          },
+          listener: (BuildContext context, AuthenticationState state) {
+            if (state is AuthenticationErrorState) {
+              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                  content: Container(
+                child: Text("${state.errorMessage}"),
+              )));
+            }
+          },
+        ),
+      ),
     );
   }
 }

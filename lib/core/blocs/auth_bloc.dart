@@ -24,6 +24,11 @@ class Unauthenticated extends AuthenticationState {}
 
 class InitialAuthState extends AuthenticationState {}
 
+class AuthenticationErrorState extends AuthenticationState {
+  final String errorMessage;
+  AuthenticationErrorState(this.errorMessage);
+}
+
 abstract class AuthenticationEvent extends Equatable {
   const AuthenticationEvent();
   @override
@@ -53,6 +58,7 @@ class AuthenticationBloc
       yield* _mapAppToState();
     }
     if (event is LoggedIn) {
+      print("yielding login in Auth bloc");
       yield* _mapLoginToState();
     }
     if (event is LoggedOut) {
@@ -68,13 +74,20 @@ class AuthenticationBloc
       } else {
         yield Unauthenticated();
       }
-    } catch (_) {
-      yield Unauthenticated();
+    } catch (e) {
+      yield AuthenticationErrorState("$e");
     }
   }
 
   Stream<AuthenticationState> _mapLoginToState() async* {
-    yield Authenticated(await _userRepository.getCurrentUser());
+    print("Inside _mapLoginToState ");
+    try {
+      final user = await _userRepository.getCurrentUser();
+      print("This is the authenticated user $user");
+      yield Authenticated(user);
+    } catch (e) {
+      yield AuthenticationErrorState("$e");
+    }
   }
 
   Stream<AuthenticationState> _mapLogoutToStart() async* {

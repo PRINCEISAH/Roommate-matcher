@@ -160,7 +160,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     try {
       await _userRepo.signInWithGoogle();
       yield LoginState.success();
-    } on Exception catch (error) {
+    } catch (error) {
       yield LoginState.failure(error.toString());
     }
   }

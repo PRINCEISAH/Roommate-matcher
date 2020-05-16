@@ -299,6 +299,9 @@ class _LoginPageState extends State<LoginPage> {
                     child: Text("${state.error}"),
                   )));
                 } else if (state.isSuccess) {
+                  print(
+                      "State is success in login bloc trying to yield LoggedIn in  Auth bloc");
+
                   BlocProvider.of<AuthenticationBloc>(context).add(LoggedIn());
                 }
               },

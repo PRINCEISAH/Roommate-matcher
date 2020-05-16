@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:roommatematcher/core/models/user.dart';
 
 /// User collection reference
@@ -7,11 +8,15 @@ final userDBReference = Firestore.instance.collection('users');
 
 class UserApiService {
   static Future<User> getUser(String id) async {
-    DocumentSnapshot userDoc = await userDBReference.document(id).get();
-    if (!userDoc.exists) {
-      throw "User not found";
+    try {
+      DocumentSnapshot userDoc = await userDBReference.document(id).get();
+      if (!userDoc.exists) {
+        throw "User not found";
+      }
+      return User.fromSnapshot(userDoc);
+    } on PlatformException catch (e) {
+      throw "Failed to get user because of poor network connection";
     }
-    return User.fromSnapshot(userDoc);
   }
 
   static Future<void> updateUser(
@@ -21,7 +26,14 @@ class UserApiService {
 
   ///Create a new user
   static Future<void> saveUser(FirebaseUser user) async {
-    final TransactionHandler createTransaction =
+    final member = User(
+      name: user.displayName,
+      email: user.email,
+      displayPic: user.photoUrl,
+    );
+    await userDBReference.document(user.uid).setData(member.toJson());
+    // It's better to use a transaction for saving of user but because it crashes the app if the connection is poor, we would avoid it
+    /*  final TransactionHandler createTransaction =
         (Transaction transaction) async {
       final DocumentSnapshot documentSnapshot =
           await transaction.get(userDBReference.document(user.uid));
@@ -32,7 +44,7 @@ class UserApiService {
       );
       await transaction.set(documentSnapshot.reference, member.toJson());
     };
-    await Firestore.instance.runTransaction(createTransaction);
+    await Firestore.instance.runTransaction(createTransaction);*/
   }
 
   /// if userId or userIds are not null , the returned Users would exclude them.
