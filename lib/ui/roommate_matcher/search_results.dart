@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:roommatematcher/core/models/user.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -58,6 +59,7 @@ class SearchPage extends StatelessWidget {
 class ApartmentCard extends StatelessWidget {
   // TODO: Change variable to Apartment model instance
   final String distance, price, imageUrl, textStmt, time;
+  final User owner;
 
   const ApartmentCard(
       {Key key,
@@ -65,7 +67,7 @@ class ApartmentCard extends StatelessWidget {
         this.price,
         this.imageUrl,
         this.textStmt,
-        this.time})
+        this.time, this.owner})
       : super(key: key);
 
   @override
@@ -150,7 +152,7 @@ class ApartmentCard extends StatelessWidget {
             children: <Widget>[
               CircleAvatar(
                 // TODO: Use appropriate user avatar here
-                backgroundImage: AssetImage('assets/images/avatar.jpg'),
+                backgroundImage: NetworkImage(owner.displayPic),
                 radius: 18,
                 backgroundColor: Color(0xffcccccc),
               ),
@@ -161,7 +163,7 @@ class ApartmentCard extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       // TODO: Use appropriate user name here
-                      'Nathaniel Sanders',
+                      owner.name,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -179,8 +181,20 @@ class ApartmentCard extends StatelessWidget {
                   ],
                 ),
               ),
-              // TODO: Implement more button function
-              IconButton(icon: Icon(Icons.more_vert), onPressed: () => {})
+              // TODO: Properly Implement more button function
+              PopupMenuButton(
+                onSelected: (value) {
+                  Scaffold.of(context).showSnackBar(
+                      SnackBar(content: Text('$value added to favourites')));
+                },
+                icon: Icon(Icons.more_vert),
+                itemBuilder: (BuildContext context) {
+                  return [
+                    PopupMenuItem(
+                      child: Text('Add to favourites'), value: owner.userId,)
+                  ];
+                },
+              ),
             ],
           )
         ],
