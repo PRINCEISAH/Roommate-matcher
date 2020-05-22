@@ -56,7 +56,7 @@ class _TopDisplayState extends State<TopDisplay> {
                   ),
               Container(
                 child: Text(
-                  '\$ ${this.widget.price}',
+                  'N ${this.widget.price}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -132,7 +132,7 @@ class _DetailPageState extends State<DetailPage> {
             ],
             flexibleSpace: FlexibleSpaceBar(
               background: TopDisplay(
-                price: 'N ${this.widget.apartment.price}/month',
+                price: '${this.widget.apartment.price}/month',
                 imageUrl: this.widget.apartment.imageUrl,
               ),
             ),
