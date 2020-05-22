@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:roommatematcher/core/models/user.dart';
 
-// TODO: Implement fromSnapshot, fromMap and toMap methods
-
 class Apartment {
   final String titleText, description;
   String apartmentId;
@@ -36,8 +34,6 @@ class Apartment {
         titleText = data['titleText'],
         description = data['description'],
         rules = List<String>.from(data['rules']),
-
-        // TODO: Change field name in database
         imageUrls = List<String>.from(data['imageUrls']);
 
   Apartment.fromSnapshot(DocumentSnapshot snapshot,User owner)
@@ -55,8 +51,6 @@ class Apartment {
     data['titleText'] = this.titleText;
     data['description'] = this.description;
     data['rules'] = this.rules;
-
-    // TODO: Change field name in database
     data['imageUrls'] = this.imageUrls;
     data['owner'] = this.owner.reference;
 

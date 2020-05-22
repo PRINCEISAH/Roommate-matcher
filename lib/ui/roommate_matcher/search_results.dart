@@ -16,15 +16,7 @@ class SearchPage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: FutureBuilder(
-        builder: (BuildContext context, AsyncSnapshot snapshot) {
-          if (snapshot.hasError) {
-            print(snapshot.error);
-            return Text('There was an error trying to get apartments');
-          }
-
-          if (snapshot.hasData) {
-            return ListView(
+      body: ListView(
               padding: EdgeInsets.symmetric(
                 vertical: 10,
                 horizontal: 20,
@@ -51,14 +43,31 @@ class SearchPage extends StatelessWidget {
                 SizedBox(
                   height: 20,
                 ),
-              ],
-            );
-          }
+                FutureBuilder(
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    if (snapshot.hasError) {
+                      print(snapshot.error);
+                      return Text('There was an error trying to get apartments');
+                    }
 
-          return CircularProgressLoading();
-        },
-        future: ApartmentApiService.getAllApartments(),
-      ),
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+//                        padding: EdgeInsets.symmetric(
+//                          vertical: 10,
+//                          horizontal: 20,
+//                        ),
+                        itemBuilder: (BuildContext context, int index) => ApartmentCard(apartment: snapshot.data[index]),
+                        itemCount: snapshot.data.length,
+                        shrinkWrap: true,
+                      );
+                    }
+
+                    return CircularProgressLoading();
+                  },
+                  future: ApartmentApiService.getAllApartments(),
+                ),
+              ],
+            ),
     );
   }
 }

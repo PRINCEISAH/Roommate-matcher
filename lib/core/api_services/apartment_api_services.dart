@@ -38,7 +38,6 @@ class ApartmentApiService {
     apartmentSnapshot = await apartmentDBReference.getDocuments();
     final apartmentSnaplist = apartmentSnapshot.documents;
     List<Apartment> apartments;
-    print('Ididithis');
     if (apartmentId != null) {
       apartments = await Future.wait((apartmentSnaplist
             ..removeWhere((docSnap) => docSnap.documentID == apartmentId))
