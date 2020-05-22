@@ -19,6 +19,18 @@ class UserApiService {
     }
   }
 
+  static Future<User> getUserFromReference(DocumentReference userReference) async {
+    try {
+      DocumentSnapshot userDoc = await userReference.get();
+      if (!userDoc.exists) {
+        throw "User not found";
+      }
+      return User.fromSnapshot(userDoc);
+    } on PlatformException catch (e) {
+      throw "Failed to get user because of poor network connection";
+    }
+  }
+
   static Future<void> updateUser(
       User member, Map<String, dynamic> updateData) async {
     await member.reference.updateData(updateData);

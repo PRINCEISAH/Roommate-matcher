@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:roommatematcher/core/models/user.dart';
+import 'package:roommatematcher/core/models/house.dart';
 
 class TopDisplay extends StatefulWidget {
+  final String price, imageUrl;
+
+  const TopDisplay({Key key, this.price, this.imageUrl}) : super(key: key);
+
   @override
   _TopDisplayState createState() => _TopDisplayState();
 }
@@ -11,8 +17,8 @@ class _TopDisplayState extends State<TopDisplay> {
     return Stack(
       children: <Widget>[
         Positioned.fill(
-          child: Image.asset(
-            'assets/images/house.jpg',
+          child: Image.network(
+            this.widget.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
@@ -35,7 +41,7 @@ class _TopDisplayState extends State<TopDisplay> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
-                child: Text(
+                  /*child: Text(
                   '1/15',
                   style: TextStyle(
                     color: Colors.white,
@@ -46,11 +52,11 @@ class _TopDisplayState extends State<TopDisplay> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   color: Colors.black45,
-                ),
-              ),
+                ),*/
+                  ),
               Container(
                 child: Text(
-                  '\$ 90/month',
+                  '\$ ${this.widget.price}',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16,
@@ -71,6 +77,9 @@ class _TopDisplayState extends State<TopDisplay> {
 }
 
 class DetailPage extends StatefulWidget {
+  final Apartment apartment;
+  const DetailPage({Key key, this.apartment}) : super(key: key);
+
   @override
   _DetailPageState createState() => _DetailPageState();
 }
@@ -85,6 +94,7 @@ class _DetailPageState extends State<DetailPage> {
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: RaisedButton(
+                // TODO: Implement contact function
                 onPressed: () {},
                 color: Colors.black,
                 child: Text('Contact'),
@@ -121,7 +131,10 @@ class _DetailPageState extends State<DetailPage> {
               )
             ],
             flexibleSpace: FlexibleSpaceBar(
-              background: TopDisplay(),
+              background: TopDisplay(
+                price: 'N ${this.widget.apartment.price}/month',
+                imageUrl: this.widget.apartment.imageUrl,
+              ),
             ),
             expandedHeight: 240,
             pinned: true,
@@ -133,43 +146,42 @@ class _DetailPageState extends State<DetailPage> {
           padding: EdgeInsets.all(15),
           children: <Widget>[
             Text(
-              'Looking for a student Housemate',
+              this.widget.apartment.titleText,
               style: Theme.of(context).textTheme.headline6,
             ),
             SizedBox(
               height: 5,
             ),
             Text(
-              'Ms Northbound, London',
+              // TODO: Change to string to layman format of address
+              this.widget.apartment.location.toString(),
               style:
-              Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 17),
+                  Theme.of(context).textTheme.subtitle1.copyWith(fontSize: 17),
             ),
             Divider(
               height: 30,
             ),
-            OwnerWidget(),
+            OwnerWidget(
+              owner: this.widget.apartment.owner,
+              time: '${this.widget.apartment.longAgo} ago',
+            ),
             Divider(
               height: 30,
             ),
-            ApartmentDescriptionWidget(),
+            ApartmentDescriptionWidget(
+              description: this.widget.apartment.description,
+            ),
             Divider(
               height: 30,
             ),
             AmenitiesWidget(
-              amenities: [
-                'AC cooling',
-                'Gated Security',
-                'Laundry',
-                'Heating',
-                'WiFi',
-                'Elevator',
-              ],
+              amenities: this.widget.apartment.amenities,
             ),
             Divider(
               height: 30,
             ),
             HouseRulesWidget(
-              value: 'Dog friendly, Cat friendly, No smoking',
+              rules: this.widget.apartment.rules,
             )
           ],
         ),
@@ -179,19 +191,24 @@ class _DetailPageState extends State<DetailPage> {
 }
 
 class ApartmentDescriptionWidget extends StatefulWidget {
+  final String description;
+
+  const ApartmentDescriptionWidget({Key key, this.description})
+      : super(key: key);
+
   @override
   State<StatefulWidget> createState() => _ApartmentDescriptionState();
 }
 
 class _ApartmentDescriptionState extends State<ApartmentDescriptionWidget> {
-  String description =
-      'Lorem ipsum dolor sit amet. There are may variations of '
-      'lorem ipsum, for example, chairs, tables, fans, desktops and any other '
-      'thing you can think of. Say for example I want to go out, a boy comes '
-      'home to eat and drink water. I don\'t even know what I\'m typing again. '
-      'I would like to go on and on and on but there\'s no time for that so I\'ll '
-      'stop there (it\'s actually \'cus I\'m lazy :D).';
+  String description;
   bool _isExpanded = false;
+
+  @override
+  void initState() {
+    description = this.widget.description;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -238,15 +255,15 @@ class AmenitiesWidget extends StatelessWidget {
           children: this
               .amenities
               .map((item) => Row(
-            children: <Widget>[
-              Icon(Icons.check),
-              Padding(
-                padding:
-                const EdgeInsets.only(bottom: 8, top: 8, left: 8),
-                child: Text(item),
-              ),
-            ],
-          ))
+                    children: <Widget>[
+                      Icon(Icons.check),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: 8, top: 8, left: 8),
+                        child: Text(item),
+                      ),
+                    ],
+                  ))
               .toList(),
         ),
       ],
@@ -287,9 +304,9 @@ class AmenityGridView extends StatelessWidget {
 }
 
 class HouseRulesWidget extends StatelessWidget {
-  final String value;
+  final List<String> rules;
 
-  const HouseRulesWidget({Key key, this.value}) : super(key: key);
+  const HouseRulesWidget({Key key, this.rules}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -300,19 +317,23 @@ class HouseRulesWidget extends StatelessWidget {
           'House rules',
           style: Theme.of(context).textTheme.headline6,
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Text(this.value),
+        AmenityGridView(
+          children: this
+              .rules
+              .map((rule) => Row(
+                    children: <Widget>[
+                      Icon(Icons.priority_high),
+                      Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Text(rule),
+                      ),
+                    ],
+                  ))
+              .toList(),
         ),
       ],
     );
   }
-}
-
-class User {
-  final displayPic, name;
-
-  User(this.displayPic, this.name);
 }
 
 class OwnerWidget extends StatelessWidget {
@@ -326,7 +347,6 @@ class OwnerWidget extends StatelessWidget {
     return Row(
       children: <Widget>[
         CircleAvatar(
-          // TODO: Use appropriate user avatar here
           backgroundImage: NetworkImage(this.owner.displayPic),
           radius: 18,
           backgroundColor: Color(0xffcccccc),

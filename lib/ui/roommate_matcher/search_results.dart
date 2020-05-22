@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:roommatematcher/core/models/user.dart';
+import 'package:roommatematcher/core/models/house.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -35,21 +35,6 @@ class SearchPage extends StatelessWidget {
             ),
           ),
           SizedBox(height: 20,),
-
-          // Using static data here
-          // TODO: Replace with results from actual search
-          ApartmentCard(
-            textStmt: 'Looking for a student housemate.',
-          ),
-          ApartmentCard(
-            textStmt: 'Looking for three housemates.',
-          ),
-          ApartmentCard(
-            textStmt: 'Looking for a student housemate.',
-          ),
-          ApartmentCard(
-            textStmt: 'Looking for a student housemate.',
-          ),
         ],
       ),
     );
@@ -57,17 +42,11 @@ class SearchPage extends StatelessWidget {
 }
 
 class ApartmentCard extends StatelessWidget {
-  // TODO: Change variable to Apartment model instance
-  final String distance, price, imageUrl, textStmt, time;
-  final User owner;
+  final Apartment apartment;
 
   const ApartmentCard(
       {Key key,
-        this.distance,
-        this.price,
-        this.imageUrl,
-        this.textStmt,
-        this.time, this.owner})
+        this.apartment})
       : super(key: key);
 
   @override
@@ -83,7 +62,7 @@ class ApartmentCard extends StatelessWidget {
               children: <Widget>[
                 Positioned.fill(
                   child: Image.network(
-                    this.imageUrl,
+                    this.apartment.imageUrl,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -99,7 +78,7 @@ class ApartmentCard extends StatelessWidget {
                               size: 16,
                             ),
                             Text(
-                              this.distance,
+                              this.apartment.distance,
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -114,7 +93,7 @@ class ApartmentCard extends StatelessWidget {
                       ),
                       Container(
                         child: Text(
-                          '\$ ${this.price}',
+                          '\$ ${this.apartment.price}',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.white,
@@ -144,15 +123,14 @@ class ApartmentCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10),
             child: Text(
-              this.textStmt,
+              this.apartment.titleText,
               style: Theme.of(context).textTheme.headline6,
             ),
           ),
           Row(
             children: <Widget>[
               CircleAvatar(
-                // TODO: Use appropriate user avatar here
-                backgroundImage: NetworkImage(owner.displayPic),
+                backgroundImage: NetworkImage(this.apartment.owner.displayPic),
                 radius: 18,
                 backgroundColor: Color(0xffcccccc),
               ),
@@ -163,7 +141,7 @@ class ApartmentCard extends StatelessWidget {
                   children: <Widget>[
                     Text(
                       // TODO: Use appropriate user name here
-                      owner.name,
+                      this.apartment.owner.name,
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
@@ -171,7 +149,7 @@ class ApartmentCard extends StatelessWidget {
                     ),
                     SizedBox(height: 3,),
                     Text(
-                      this.time,
+                      '${this.apartment.longAgo} ago',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w400,
@@ -184,6 +162,7 @@ class ApartmentCard extends StatelessWidget {
               // TODO: Properly Implement more button function
               PopupMenuButton(
                 onSelected: (value) {
+                  // TODO: Properly implement favourite function
                   Scaffold.of(context).showSnackBar(
                       SnackBar(content: Text('$value added to favourites')));
                 },
@@ -191,7 +170,7 @@ class ApartmentCard extends StatelessWidget {
                 itemBuilder: (BuildContext context) {
                   return [
                     PopupMenuItem(
-                      child: Text('Add to favourites'), value: owner.userId,)
+                      child: Text('Add to favourites'), value: this.apartment.owner.userId,)
                   ];
                 },
               ),

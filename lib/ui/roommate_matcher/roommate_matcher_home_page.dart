@@ -52,6 +52,11 @@ class RoommateMatcherHomePage extends StatelessWidget {
           )
         ],
       ),
+      body: ListView(
+        children: <Widget>[
+
+        ],
+      ),
     );
   }
 }
