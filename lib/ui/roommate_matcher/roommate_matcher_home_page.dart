@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:roommatematcher/core/blocs/auth_bloc.dart';
+import 'package:roommatematcher/ui/roommate_matcher/search_results.dart';
 
 class RoommateMatcherHomePage extends StatelessWidget {
   @override
@@ -54,7 +55,9 @@ class RoommateMatcherHomePage extends StatelessWidget {
       ),
       body: ListView(
         children: <Widget>[
-
+          FlatButton(onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => SearchPage(),));
+          }, child: Text('Go'),),
         ],
       ),
     );

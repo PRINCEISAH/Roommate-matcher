@@ -31,14 +31,14 @@ class Apartment {
   Apartment.fromMap(Map data, {this.apartmentId, this.reference, this.owner})
       : price = data['price'],
         location = data['location'] ?? GeoPoint(1, 1),
-        amenities = data['amenities'],
+        amenities = List<String>.from(data['amenities']),
         dateTime = data['dateTime'].toDate(),
         titleText = data['titleText'],
         description = data['description'],
-        rules = data['rules'],
+        rules = List<String>.from(data['rules']),
 
         // TODO: Change field name in database
-        imageUrls = data['imageUrls'];
+        imageUrls = List<String>.from(data['imageUrls']);
 
   Apartment.fromSnapshot(DocumentSnapshot snapshot,User owner)
       : this.fromMap(snapshot.data,

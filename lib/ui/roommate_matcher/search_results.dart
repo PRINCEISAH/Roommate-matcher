@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:roommatematcher/core/api_services/apartment_api_services.dart';
 import 'package:roommatematcher/core/models/house.dart';
+import 'package:roommatematcher/utils/circular_progress_loading.dart';
 
 class SearchPage extends StatelessWidget {
   @override
@@ -14,28 +16,48 @@ class SearchPage extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20,),
-        children: <Widget>[
-          TextFormField(
-            decoration: InputDecoration(
-              prefixIcon: Icon(Icons.search),
-              suffixIcon: IconButton(
-                // Yet to implement the function
-                // TODO: Implement the filter function
-                  icon: Icon(Icons.filter_list), onPressed: () => Container()),
-              filled: true,
-              fillColor: Colors.grey.shade200,
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide.none,
-                borderRadius: BorderRadius.circular(5),
+      body: FutureBuilder(
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            print(snapshot.error);
+            return Text('There was an error trying to get apartments');
+          }
+
+          if (snapshot.hasData) {
+            return ListView(
+              padding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 20,
               ),
-              // TODO: Use appropriate hint text
-              hintText: 'MS Northbound, London',
-            ),
-          ),
-          SizedBox(height: 20,),
-        ],
+              children: <Widget>[
+                TextFormField(
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search),
+                    suffixIcon: IconButton(
+                        // Yet to implement the function
+                        // TODO: Implement the filter function
+                        icon: Icon(Icons.filter_list),
+                        onPressed: () => Container()),
+                    filled: true,
+                    fillColor: Colors.grey.shade200,
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide.none,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    // TODO: Use appropriate hint text
+                    hintText: 'MS Northbound, London',
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            );
+          }
+
+          return CircularProgressLoading();
+        },
+        future: ApartmentApiService.getAllApartments(),
       ),
     );
   }
@@ -44,10 +66,7 @@ class SearchPage extends StatelessWidget {
 class ApartmentCard extends StatelessWidget {
   final Apartment apartment;
 
-  const ApartmentCard(
-      {Key key,
-        this.apartment})
-      : super(key: key);
+  const ApartmentCard({Key key, this.apartment}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +153,9 @@ class ApartmentCard extends StatelessWidget {
                 radius: 18,
                 backgroundColor: Color(0xffcccccc),
               ),
-              SizedBox(width: 8,),
+              SizedBox(
+                width: 8,
+              ),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,7 +168,9 @@ class ApartmentCard extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(height: 3,),
+                    SizedBox(
+                      height: 3,
+                    ),
                     Text(
                       '${this.apartment.longAgo} ago',
                       style: TextStyle(
@@ -170,7 +193,9 @@ class ApartmentCard extends StatelessWidget {
                 itemBuilder: (BuildContext context) {
                   return [
                     PopupMenuItem(
-                      child: Text('Add to favourites'), value: this.apartment.owner.userId,)
+                      child: Text('Add to favourites'),
+                      value: this.apartment.owner.userId,
+                    )
                   ];
                 },
               ),
@@ -178,7 +203,9 @@ class ApartmentCard extends StatelessWidget {
           )
         ],
       ),
-      margin: EdgeInsets.only(bottom: 20,),
+      margin: EdgeInsets.only(
+        bottom: 20,
+      ),
     );
   }
 }
