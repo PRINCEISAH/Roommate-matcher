@@ -1,9 +1,12 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:roommatematcher/core/blocs/auth_bloc.dart';
-import 'package:roommatematcher/core/models/house.dart';
-import 'package:roommatematcher/ui/roommate_matcher/apartment_details_page.dart';
+//import 'package:roommatematcher/core/models/house.dart';
+//import 'package:roommatematcher/ui/roommate_matcher/apartment_details_page.dart';
+import 'package:roommatematcher/ui/roommate_matcher/search_results.dart';
+import 'package:roommatematcher/utils/circular_progress_loading.dart';
+import 'package:roommatematcher/core/api_services/apartment_api_services.dart';
 
 class RoommateMatcherHomePage extends StatefulWidget {
   @override
@@ -12,6 +15,16 @@ class RoommateMatcherHomePage extends StatefulWidget {
 }
 
 class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
+
+  columnBuilder({BuildContext context, IndexedWidgetBuilder itemBuilder, int itemCount}) {
+    List<Widget> columnChildren = [];
+    for (var i = 0; i < itemCount; ++i) {
+      columnChildren.add(itemBuilder(context, i));
+    }
+
+    return Column(children: columnChildren,);
+  }
+
   @override
   Widget build(BuildContext context) {
     // This is how to get the user anywhere in the widget tree once the person have successfully authenticate
@@ -20,148 +33,190 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
             .user;
     int _currentIndex = 0;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Welcome ${user.name}"),
-        actions: <Widget>[
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                  child: Text("Log out"),
-                  value: "logout",
-                )
-              ];
-            },
-            onSelected: (String val) {
-              if (val == "logout") {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Log out"),
-                        content: Text("Are you sure you want to log out?"),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text("Cancel"),
-                            onPressed: () => Navigator.maybePop(context),
+
+    /// This is where the logout function is
+    /*popUpMenuFunction(String val) {
+      if (val == "logout") {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("Log out"),
+                content: Text("Are you sure you want to log out?"),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text("Cancel"),
+                    onPressed: () => Navigator.maybePop(context),
+                  ),
+                  FlatButton(
+                    child: Text("Log out"),
+                    onPressed: () {
+                      BlocProvider.of<AuthenticationBloc>(context)
+                          .add(LoggedOut());
+                      Navigator.maybePop(context);
+                    },
+                  ),
+                ],
+              );
+            });
+      }
+    }*/
+
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        body: NestedScrollView(
+            headerSliverBuilder: (_, __) => [
+                  SliverPadding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    sliver: SliverAppBar(
+                      elevation: 0,
+                      pinned: true,
+                      floating: true,
+                      forceElevated: __,
+                      backgroundColor: Colors.transparent,
+                      bottom: PreferredSize(
+                        preferredSize: Size.fromHeight(60),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(width: 1.3, color: Theme.of(context).dividerColor),
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.white,
                           ),
-                          FlatButton(
-                            child: Text("Log out"),
-                            onPressed: () {
-                              BlocProvider.of<AuthenticationBloc>(context)
-                                  .add(LoggedOut());
-                              Navigator.maybePop(context);
-                            },
+                          padding: EdgeInsets.all(2),
+                          child: TabBar(
+                            tabs: [
+                              Tab(
+                                text: 'A Room',
+                              ),
+                              Tab(
+                                text: 'A Roommate',
+                              )
+                            ],
+                            indicator: BoxDecoration(
+                              color: Colors.deepOrange,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            unselectedLabelColor: Colors.blueGrey.shade700,
+                          ),
+                        ),
+                      ),
+                      expandedHeight: 240,
+                      flexibleSpace: FlexibleSpaceBar(background: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            'Hi, ${user.name}',
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headline2,
+                          ),
+                          Text(
+                            'Advertise your room or find housemates with similar interests.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 17,
+                            ),
                           ),
                         ],
-                      );
-                    });
-              }
-            },
-          )
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
-        currentIndex: _currentIndex,
-        iconSize: 20,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.orange),
-            title: Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.favorite,
-              color: Colors.grey,
-            ),
-            title: Text('Favourite'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.search,
-              color: Colors.grey,
-            ),
-            title: Text('Search'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.face,
-              color: Colors.grey,
-            ),
-            title: Text('profile'),
-          )
-        ],
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
+                      ),)
+                    ),
+                  ),
+                ],
+            body: TabBarView(
+              children: [
+                ListView(
+                  padding: EdgeInsets.symmetric(
+                    vertical: 10,
+                    horizontal: 20,
+                  ),
+                  children: <Widget>[
+                    TextFormField(
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.search),
+                        suffixIcon: IconButton(
+                          // Yet to implement the function
+                          // TODO: Implement the filter function
+                            icon: Icon(Icons.filter_list),
+                            onPressed: () => Container()),
+                        filled: true,
+                        fillColor: Colors.grey.shade200,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        // TODO: Use appropriate hint text
+                        hintText: 'MS Northbound, London',
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    FutureBuilder(
+                      builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        if (snapshot.hasError) {
+                          print(snapshot.error);
+                          return Text('There was an error trying to get apartments');
+                        }
 
-            if (index == 2) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DetailPage(
-                            apartment: Apartment(
-                              apartmentId: "23",
-                              amenities: [
-                                "water",
-                                "light",
-                              ],
-                              imageUrls: [
-                                'https://i.pinimg.com/originals/73/5f/72/735f72927dff9b3904f7da4779d3297e.jpg,',
-                                "https://i.pinimg.com/originals/73/5f/72/735f72927dff9b3904f7da4779d3297e.jpg"
-                              ],
-                              price: 2000,
-                            ),
-                          )));
-            }
-          });
-        },
-      ),
-      body: ListView(
-        children: <Widget>[
-//          DetailPage(
-//            apartment: Apartment(apartmentId: "23", amenities: [
-//              "water",
-//              "light",
-//            ], imageUrls: [
-//              'https://i.pinimg.com/originals/73/5f/72/735f72927dff9b3904f7da4779d3297e.jpg,',
-//              "https://i.pinimg.com/originals/73/5f/72/735f72927dff9b3904f7da4779d3297e.jpg"
-//            ]),
-//          )
-          GestureDetector(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DetailPage(
-                  apartment: Apartment(
-                      description: "two bed room flat with kitchen and toilet",
-                      dateTime: DateTime(2020),
-                      location: GeoPoint(2, 6),
-                      titleText: "Two Bed Room",
-                      apartmentId: '01111',
-                      amenities: ['water', "Stable power,Security"],
-                      imageUrls: [
-                        'https://images.nigeriapropertycentre.com/properties/images/395512/2541977_395512-exquisite-3-bedroom-bungalow-with-two-room-self-contained-apartment-all-on-ample-grounds-in-iyaganku-gra-detached-bungalows-for-sale-iyaganku-ibadan-oyo-.JPG',
-                        'https://images.nigeriapropertycentre.com/properties/images/395512/2541977_395512-exquisite-3-bedroom-bungalow-with-two-room-self-contained-apartment-all-on-ample-grounds-in-iyaganku-gra-detached-bungalows-for-sale-iyaganku-ibadan-oyo-.JPG',
-                      ],
-                      rules: ["No smoking,No late night"],
-                      price: 30),
+                        if (snapshot.hasData) {
+                          return columnBuilder(
+                            context: context,
+                            itemBuilder: (BuildContext context, int index) =>
+                                ApartmentCard(apartment: snapshot.data[index]),
+                            itemCount: snapshot.data.length,
+                          );
+                        }
+
+                        return CircularProgressLoading();
+                      },
+                      future: ApartmentApiService.getAllApartments(),
+                    ),
+                  ],
                 ),
-              ),
+                Center(
+                  child: Text('Tab two'),
+                ),
+              ],
+            )),
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white,
+          currentIndex: _currentIndex,
+          iconSize: 20,
+          type: BottomNavigationBarType.fixed,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home, color: Colors.orange),
+              title: Text('Home'),
             ),
-            child: Container(
-              height: 300,
-              child: TopDisplay(
-                price: "200,00",
-                imageUrl:
-                    'https://images.nigeriapropertycentre.com/properties/images/395512/2541977_395512-exquisite-3-bedroom-bungalow-with-two-room-self-contained-apartment-all-on-ample-grounds-in-iyaganku-gra-detached-bungalows-for-sale-iyaganku-ibadan-oyo-.JPG',
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.favorite,
+                color: Colors.grey,
               ),
+              title: Text('Favourite'),
             ),
-          )
-        ],
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.search,
+                color: Colors.grey,
+              ),
+              title: Text('Search'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(
+                Icons.face,
+                color: Colors.grey,
+              ),
+              title: Text('profile'),
+            )
+          ],
+          onTap: (index) {
+            setState(() {
+              _currentIndex = index;
+            });
+          },
+        ),
       ),
     );
   }
