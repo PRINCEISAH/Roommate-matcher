@@ -38,7 +38,7 @@ class SearchPage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
               ),
               // TODO: Use appropriate hint text
-              hintText: 'MS Northbound, London',
+              hintText: 'Lekki, Lagos',
             ),
           ),
           SizedBox(

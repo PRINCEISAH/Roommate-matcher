@@ -1,9 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:roommatematcher/core/blocs/auth_bloc.dart';
 import 'package:roommatematcher/core/models/house.dart';
 import 'package:roommatematcher/ui/roommate_matcher/apartment_details_page.dart';
+import 'package:roommatematcher/ui/roommate_matcher/search_results.dart';
 
 class RoommateMatcherHomePage extends StatefulWidget {
   @override
@@ -21,47 +22,6 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
     int _currentIndex = 0;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Welcome ${user.name}"),
-        actions: <Widget>[
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                  child: Text("Log out"),
-                  value: "logout",
-                )
-              ];
-            },
-            onSelected: (String val) {
-              if (val == "logout") {
-                showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text("Log out"),
-                        content: Text("Are you sure you want to log out?"),
-                        actions: <Widget>[
-                          FlatButton(
-                            child: Text("Cancel"),
-                            onPressed: () => Navigator.maybePop(context),
-                          ),
-                          FlatButton(
-                            child: Text("Log out"),
-                            onPressed: () {
-                              BlocProvider.of<AuthenticationBloc>(context)
-                                  .add(LoggedOut());
-                              Navigator.maybePop(context);
-                            },
-                          ),
-                        ],
-                      );
-                    });
-              }
-            },
-          )
-        ],
-      ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         currentIndex: _currentIndex,
@@ -99,52 +59,109 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
             _currentIndex = index;
 
             if (index == 2) {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DetailPage(
-                            apartment: Apartment(
-                              apartmentId: "23",
-                              amenities: [
-                                "water",
-                                "light",
-                              ],
-                              imageUrls: [
-                                'https://i.pinimg.com/originals/73/5f/72/735f72927dff9b3904f7da4779d3297e.jpg,',
-                                "https://i.pinimg.com/originals/73/5f/72/735f72927dff9b3904f7da4779d3297e.jpg"
-                              ],
-                              price: 2000,
-                            ),
-                          )));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => SearchPage()));
             }
           });
         },
       ),
       body: ListView(
         children: <Widget>[
-//          DetailPage(
-//            apartment: Apartment(apartmentId: "23", amenities: [
-//              "water",
-//              "light",
-//            ], imageUrls: [
-//              'https://i.pinimg.com/originals/73/5f/72/735f72927dff9b3904f7da4779d3297e.jpg,',
-//              "https://i.pinimg.com/originals/73/5f/72/735f72927dff9b3904f7da4779d3297e.jpg"
-//            ]),
-//          )
+          SizedBox(
+            height: 70,
+          ),
+          Container(
+            child: Column(
+              children: <Widget>[
+                Text("Hi,${user.name}",
+                    style: GoogleFonts.nunito(
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 40)),
+                Text("Advertise your room or find,",
+                    style: GoogleFonts.nunito(
+                        color: Colors.deepPurple, fontSize: 20)),
+                Text("housemates with similar interests.",
+                    style: GoogleFonts.nunito(
+                        color: Colors.deepPurple, fontSize: 20)),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          Container(
+            margin: EdgeInsets.only(left: 30, right: 30),
+            height: 40,
+            width: double.infinity,
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.orange,
+                          borderRadius:
+                              BorderRadius.only(topRight: Radius.circular(20))),
+                      height: double.infinity,
+                      child: Container(
+                        child: Center(
+                          child: Text(
+                            "A Room",
+                            style: GoogleFonts.nunito(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: double.infinity,
+                      child: Center(
+                        child: Text(
+                          "A Housemate",
+                          style: GoogleFonts.nunito(
+                              color: Colors.deepPurple,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 29,
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Text(
+              'Recommended',
+              style: GoogleFonts.nunito(
+                  fontSize: 25,
+                  color: Colors.deepPurple,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
           GestureDetector(
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => DetailPage(
                   apartment: Apartment(
-                      description: "two bed room flat with kitchen and toilet",
-                      dateTime: DateTime(2020),
-                      location: GeoPoint(2, 6),
-                      titleText: "Two Bed Room",
-                      apartmentId: '01111',
+                      titleText: "Two BedRoom",
+                      apartmentId: '0101',
                       amenities: ['water', "Stable power,Security"],
                       imageUrls: [
-                        'https://images.nigeriapropertycentre.com/properties/images/395512/2541977_395512-exquisite-3-bedroom-bungalow-with-two-room-self-contained-apartment-all-on-ample-grounds-in-iyaganku-gra-detached-bungalows-for-sale-iyaganku-ibadan-oyo-.JPG',
+                        "https://q-cf.bstatic.com/images/hotel/max1024x768/162/162892055.jpg",
                         'https://images.nigeriapropertycentre.com/properties/images/395512/2541977_395512-exquisite-3-bedroom-bungalow-with-two-room-self-contained-apartment-all-on-ample-grounds-in-iyaganku-gra-detached-bungalows-for-sale-iyaganku-ibadan-oyo-.JPG',
                       ],
                       rules: ["No smoking,No late night"],
@@ -153,11 +170,14 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
               ),
             ),
             child: Container(
-              height: 300,
-              child: TopDisplay(
-                price: "200,00",
-                imageUrl:
-                    'https://images.nigeriapropertycentre.com/properties/images/395512/2541977_395512-exquisite-3-bedroom-bungalow-with-two-room-self-contained-apartment-all-on-ample-grounds-in-iyaganku-gra-detached-bungalows-for-sale-iyaganku-ibadan-oyo-.JPG',
+              margin: EdgeInsets.only(left: 20, right: 20),
+              height: 200,
+              child: Container(
+                child: TopDisplay(
+                  price: "200,00",
+                  imageUrl:
+                      "https://q-cf.bstatic.com/images/hotel/max1024x768/162/162892055.jpg",
+                ),
               ),
             ),
           )
