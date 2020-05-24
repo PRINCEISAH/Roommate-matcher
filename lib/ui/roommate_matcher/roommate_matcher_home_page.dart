@@ -1,10 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:roommatematcher/core/blocs/auth_bloc.dart';
 import 'package:roommatematcher/core/models/house.dart';
 import 'package:roommatematcher/ui/roommate_matcher/apartment_details_page.dart';
-import 'package:roommatematcher/ui/roommate_matcher/search_results.dart';
 
 class RoommateMatcherHomePage extends StatefulWidget {
   @override
@@ -13,6 +12,16 @@ class RoommateMatcherHomePage extends StatefulWidget {
 }
 
 class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
+
+  columnBuilder({BuildContext context, IndexedWidgetBuilder itemBuilder, int itemCount}) {
+    List<Widget> columnChildren = [];
+    for (var i = 0; i < itemCount; ++i) {
+      columnChildren.add(itemBuilder(context, i));
+    }
+
+    return Column(children: columnChildren,);
+  }
+
   @override
   Widget build(BuildContext context) {
     // This is how to get the user anywhere in the widget tree once the person have successfully authenticate
