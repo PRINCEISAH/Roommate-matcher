@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:roommatematcher/core/blocs/auth_bloc.dart';
 import 'package:roommatematcher/core/models/chat.dart';
 import 'package:roommatematcher/core/models/user.dart';
+import 'package:roommatematcher/ui/chat/chat_screen.dart';
 import 'package:roommatematcher/utils/circular_progress_loading.dart';
 
 class ChatListScreen extends StatefulWidget {
@@ -66,7 +67,32 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           radius: 10,
                           backgroundColor: Colors.deepOrange,
                         ),
-                        onTap: () {},
+                        onTap: () async {
+                          String chatGroupId;
+                          chatGroupId = user.userId.hashCode < peer.userId.hashCode
+                              ? '${user.userId}-${peer.userId}'
+                              : '${peer.userId}-${user.userId}';
+                          DocumentReference chatGroupReference = Firestore.instance
+                              .collection('messages')
+                              .document(chatGroupId);
+                          DocumentSnapshot chatGroupSnapshot =
+                          await chatGroupReference.get();
+                          if (!chatGroupSnapshot.exists) {
+                            await chatGroupReference.setData({
+                              'members': [peer.reference, user.reference],
+                            });
+                          }
+                          ChatGroup chatGroup =
+                          ChatGroup.fromSnapshot(await chatGroupReference.get());
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (BuildContext context) => ChatScreen(
+                                peer: peer,
+                                chat: chatGroup,
+                              ),
+                            ),
+                          );
+                        },
                         // TODO: Add onTap function
                       );
                     }
