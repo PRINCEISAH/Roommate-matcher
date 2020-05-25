@@ -15,14 +15,16 @@ class RoommateMatcherHomePage extends StatefulWidget {
 }
 
 class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
-
-  columnBuilder({BuildContext context, IndexedWidgetBuilder itemBuilder, int itemCount}) {
+  columnBuilder(
+      {BuildContext context, IndexedWidgetBuilder itemBuilder, int itemCount}) {
     List<Widget> columnChildren = [];
     for (var i = 0; i < itemCount; ++i) {
       columnChildren.add(itemBuilder(context, i));
     }
 
-    return Column(children: columnChildren,);
+    return Column(
+      children: columnChildren,
+    );
   }
 
   @override
@@ -32,7 +34,6 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
         (BlocProvider.of<AuthenticationBloc>(context).state as Authenticated)
             .user;
     int _currentIndex = 0;
-
 
     /// This is where the logout function is
     /*popUpMenuFunction(String val) {
@@ -70,57 +71,59 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
                     sliver: SliverAppBar(
-                      elevation: 0,
-                      pinned: true,
-                      floating: true,
-                      forceElevated: __,
-                      backgroundColor: Colors.transparent,
-                      bottom: PreferredSize(
-                        preferredSize: Size.fromHeight(60),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border:
-                                Border.all(width: 1.3, color: Theme.of(context).dividerColor),
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          padding: EdgeInsets.all(2),
-                          child: TabBar(
-                            tabs: [
-                              Tab(
-                                text: 'A Room',
-                              ),
-                              Tab(
-                                text: 'A Roommate',
-                              )
-                            ],
-                            indicator: BoxDecoration(
-                              color: Colors.deepOrange,
+                        elevation: 0,
+                        pinned: true,
+                        floating: true,
+                        forceElevated: __,
+                        backgroundColor: Colors.transparent,
+                        bottom: PreferredSize(
+                          preferredSize: Size.fromHeight(60),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 1.3,
+                                  color: Theme.of(context).dividerColor),
                               borderRadius: BorderRadius.circular(5),
+                              color: Colors.white,
                             ),
-                            unselectedLabelColor: Colors.blueGrey.shade700,
+                            padding: EdgeInsets.all(2),
+                            child: TabBar(
+                              tabs: [
+                                Tab(
+                                  text: 'A Room',
+                                ),
+                                Tab(
+                                  text: 'A Roommate',
+                                )
+                              ],
+                              indicator: BoxDecoration(
+                                color: Colors.deepOrange,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              unselectedLabelColor: Colors.blueGrey.shade700,
+                            ),
                           ),
                         ),
-                      ),
-                      expandedHeight: 240,
-                      flexibleSpace: FlexibleSpaceBar(background: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'Hi, ${user.name}',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headline2,
+                        expandedHeight: 240,
+                        flexibleSpace: FlexibleSpaceBar(
+                          background: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Hi, ${user.name}',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.headline2,
+                              ),
+                              Text(
+                                'Advertise your room or find housemates with similar interests.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 17,
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            'Advertise your room or find housemates with similar interests.',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 17,
-                            ),
-                          ),
-                        ],
-                      ),)
-                    ),
+                        )),
                   ),
                 ],
             body: TabBarView(
@@ -135,8 +138,8 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.search),
                         suffixIcon: IconButton(
-                          // Yet to implement the function
-                          // TODO: Implement the filter function
+                            // Yet to implement the function
+                            // TODO: Implement the filter function
                             icon: Icon(Icons.filter_list),
                             onPressed: () => Container()),
                         filled: true,
@@ -156,7 +159,8 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
                       builder: (BuildContext context, AsyncSnapshot snapshot) {
                         if (snapshot.hasError) {
                           print(snapshot.error);
-                          return Text('There was an error trying to get apartments');
+                          return Text(
+                              'There was an error trying to get apartments');
                         }
 
                         if (snapshot.hasData) {
