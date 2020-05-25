@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:roommatematcher/core/blocs/auth_bloc.dart';
+import 'package:roommatematcher/core/models/chat.dart';
 import 'package:roommatematcher/core/models/user.dart';
 import 'package:roommatematcher/core/models/house.dart';
+import 'package:roommatematcher/ui/chat/chat_screen.dart';
 
 class TopDisplay extends StatefulWidget {
   final String price, imageUrl;
@@ -87,6 +92,9 @@ class DetailPage extends StatefulWidget {
 class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
+    final user =
+        (BlocProvider.of<AuthenticationBloc>(context).state as Authenticated)
+            .user;
     return Scaffold(
       bottomSheet: Row(
         children: <Widget>[
@@ -95,7 +103,33 @@ class _DetailPageState extends State<DetailPage> {
               padding: const EdgeInsets.all(15.0),
               child: RaisedButton(
                 // TODO: Implement contact function
-                onPressed: () {},
+                onPressed: () async {
+                  String chatGroupId;
+                  User peer = widget.apartment.owner;
+                  chatGroupId = user.userId.hashCode < peer.userId.hashCode
+                      ? '${user.userId}-${peer.userId}'
+                      : '${peer.userId}-${user.userId}';
+                  DocumentReference chatGroupReference = Firestore.instance
+                      .collection('messages')
+                      .document(chatGroupId);
+                  DocumentSnapshot chatGroupSnapshot =
+                      await chatGroupReference.get();
+                  if (!chatGroupSnapshot.exists) {
+                    await chatGroupReference.setData({
+                      'members': [peer.reference, user.reference],
+                    });
+                  }
+                  ChatGroup chatGroup =
+                      ChatGroup.fromSnapshot(await chatGroupReference.get());
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => ChatScreen(
+                        peer: peer,
+                        chat: chatGroup,
+                      ),
+                    ),
+                  );
+                },
                 color: Colors.black,
                 child: Text('Contact'),
                 textColor: Colors.white,
