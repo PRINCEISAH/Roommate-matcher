@@ -66,6 +66,7 @@ class _ChatListScreenState extends State<ChatListScreen> {
                           radius: 10,
                           backgroundColor: Colors.deepOrange,
                         ),
+                        onTap: () {},
                         // TODO: Add onTap function
                       );
                     }

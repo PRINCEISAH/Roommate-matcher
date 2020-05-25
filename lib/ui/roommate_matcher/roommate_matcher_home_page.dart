@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:roommatematcher/core/blocs/auth_bloc.dart';
+import 'package:roommatematcher/ui/chat/chat_list_screen.dart';
 //import 'package:roommatematcher/core/models/house.dart';
 //import 'package:roommatematcher/ui/roommate_matcher/apartment_details_page.dart';
 import 'package:roommatematcher/ui/roommate_matcher/search_results.dart';
@@ -15,6 +16,9 @@ class RoommateMatcherHomePage extends StatefulWidget {
 }
 
 class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
+
+  int _currentIndex = 0;
+
   columnBuilder(
       {BuildContext context, IndexedWidgetBuilder itemBuilder, int itemCount}) {
     List<Widget> columnChildren = [];
@@ -33,7 +37,7 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
     final user =
         (BlocProvider.of<AuthenticationBloc>(context).state as Authenticated)
             .user;
-    int _currentIndex = 0;
+
 
     /// This is where the logout function is
     /*popUpMenuFunction(String val) {
@@ -64,9 +68,9 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
     }*/
 
     return DefaultTabController(
-      length: 2,
+      length: _currentIndex == 1 ? 1 :2,
       child: Scaffold(
-        body: NestedScrollView(
+        body: _currentIndex == 1 ? ChatListScreen() : NestedScrollView(
             headerSliverBuilder: (_, __) => [
                   SliverPadding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
@@ -187,30 +191,29 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
           backgroundColor: Colors.white,
           currentIndex: _currentIndex,
           iconSize: 20,
+          selectedIconTheme: IconThemeData(color: Colors.deepOrange),
+          unselectedIconTheme: IconThemeData(color: Colors.grey),
           type: BottomNavigationBarType.fixed,
           items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home, color: Colors.orange),
+              icon: Icon(Icons.home,),
               title: Text('Home'),
             ),
             BottomNavigationBarItem(
               icon: Icon(
-                Icons.favorite,
-                color: Colors.grey,
+                Icons.chat,
               ),
-              title: Text('Favourite'),
+              title: Text('Messages'),
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.search,
-                color: Colors.grey,
               ),
               title: Text('Search'),
             ),
             BottomNavigationBarItem(
               icon: Icon(
                 Icons.face,
-                color: Colors.grey,
               ),
               title: Text('profile'),
             )
