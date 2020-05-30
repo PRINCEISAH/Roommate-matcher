@@ -13,7 +13,6 @@ class ChatListScreen extends StatefulWidget {
 }
 
 class _ChatListScreenState extends State<ChatListScreen> {
-
   @override
   Widget build(BuildContext context) {
     final user =
@@ -69,21 +68,23 @@ class _ChatListScreenState extends State<ChatListScreen> {
                         ),
                         onTap: () async {
                           String chatGroupId;
-                          chatGroupId = user.userId.hashCode < peer.userId.hashCode
-                              ? '${user.userId}-${peer.userId}'
-                              : '${peer.userId}-${user.userId}';
-                          DocumentReference chatGroupReference = Firestore.instance
+                          chatGroupId =
+                              user.userId.hashCode < peer.userId.hashCode
+                                  ? '${user.userId}-${peer.userId}'
+                                  : '${peer.userId}-${user.userId}';
+                          DocumentReference chatGroupReference = Firestore
+                              .instance
                               .collection('messages')
                               .document(chatGroupId);
                           DocumentSnapshot chatGroupSnapshot =
-                          await chatGroupReference.get();
+                              await chatGroupReference.get();
                           if (!chatGroupSnapshot.exists) {
                             await chatGroupReference.setData({
                               'members': [peer.reference, user.reference],
                             });
                           }
-                          ChatGroup chatGroup =
-                          ChatGroup.fromSnapshot(await chatGroupReference.get());
+                          ChatGroup chatGroup = ChatGroup.fromSnapshot(
+                              await chatGroupReference.get());
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (BuildContext context) => ChatScreen(
