@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      //theme: appTheme,
+      theme: ThemeData(primarySwatch: Colors.deepOrange),
       // routes: AppRoute().routes,
       //navigatorObservers: [AppRoute()],
       //onGenerateRoute: AppRoute().generateRoute,

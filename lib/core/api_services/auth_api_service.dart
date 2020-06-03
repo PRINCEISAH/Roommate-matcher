@@ -29,7 +29,10 @@ class AuthApiService {
     );
   }
 
-  Future<FirebaseUser> signUp({String email, String password}) async {
+  Future<FirebaseUser> signUp({
+    String email,
+    String password,
+  }) async {
     await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
       password: password,
