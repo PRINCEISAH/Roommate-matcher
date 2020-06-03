@@ -31,18 +31,22 @@ class UserRepository {
     }
   }
 
-  Future signUp(String username, String email, String password) async {
+  Future signUp(
+      String username, String email, String phone, String password) async {
     UserUpdateInfo updateInfo = UserUpdateInfo();
     updateInfo.displayName = username;
-    FirebaseUser firebaseUser =
-        await _authApi.signUp(email: email, password: password);
+
+    FirebaseUser firebaseUser = await _authApi.signUp(
+      email: email,
+      password: password,
+    );
 
     await firebaseUser.updateProfile(updateInfo);
     await firebaseUser.reload();
     firebaseUser = await FirebaseAuth.instance.currentUser();
     print('This is the  username after upload ${firebaseUser.displayName} ');
 
-    await UserApiService.saveUser(firebaseUser);
+    await UserApiService.saveUser(firebaseUser, phone: phone);
   }
 
   Future<void> resetPassword(String email) => _authApi.resetPassword(email);

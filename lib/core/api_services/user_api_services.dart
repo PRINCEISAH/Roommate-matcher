@@ -19,7 +19,8 @@ class UserApiService {
     }
   }
 
-  static Future<User> getUserFromReference(DocumentReference userReference) async {
+  static Future<User> getUserFromReference(
+      DocumentReference userReference) async {
     try {
       DocumentSnapshot userDoc = await userReference.get();
       if (!userDoc.exists) {
@@ -37,12 +38,12 @@ class UserApiService {
   }
 
   ///Create a new user
-  static Future<void> saveUser(FirebaseUser user) async {
+  static Future<void> saveUser(FirebaseUser user, {String phone}) async {
     final member = User(
-      name: user.displayName,
-      email: user.email,
-      displayPic: user.photoUrl,
-    );
+        name: user.displayName,
+        email: user.email,
+        displayPic: user.photoUrl,
+        phone: phone);
     await userDBReference.document(user.uid).setData(member.toJson());
     // It's better to use a transaction for saving of user but because it crashes the app if the connection is poor, we would avoid it
     /*  final TransactionHandler createTransaction =

@@ -65,7 +65,6 @@ class _ChatScreenState extends State<ChatScreen> {
                   .copyWith(color: Colors.black),
             ),
         actions: <Widget>[
-          // TODO: Include call function
           IconButton(
               icon: Icon(Icons.call),
               onPressed: () => makePhoneCall(widget.peer.phone)),
