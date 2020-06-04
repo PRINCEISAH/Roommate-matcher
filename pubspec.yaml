@@ -28,6 +28,8 @@ dependencies:
   dotted_border: ^1.0.5 # This would probably be removed
   firebase_storage: ^3.1.6
   provider: ^4.1.2
+  url_launcher: ^5.4.10
+
 
 
   flutter:

@@ -6,6 +6,7 @@ import 'package:roommatematcher/core/models/chat.dart';
 import 'package:roommatematcher/core/models/user.dart';
 import 'package:roommatematcher/core/repository/user_repository.dart';
 import 'package:roommatematcher/utils/circular_progress_loading.dart';
+import 'package:roommatematcher/utils/make_phone_call.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatGroup chat;
@@ -64,8 +65,9 @@ class _ChatScreenState extends State<ChatScreen> {
                   .copyWith(color: Colors.black),
             ),
         actions: <Widget>[
-          // TODO: Include call function
-          IconButton(icon: Icon(Icons.call), onPressed: () {}),
+          IconButton(
+              icon: Icon(Icons.call),
+              onPressed: () => makePhoneCall(widget.peer.phone)),
         ],
       ),
       body: StreamBuilder(

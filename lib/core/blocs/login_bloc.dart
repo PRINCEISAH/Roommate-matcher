@@ -38,10 +38,11 @@ class SignUpPressed extends LoginEvent {
   final String username;
   final String email;
   final String password;
-  SignUpPressed(this.username, this.email, this.password);
+  final String phone;
+  SignUpPressed(this.username, this.email, this.phone, this.password);
 
   @override
-  List<Object> get props => [username, email, password];
+  List<Object> get props => [username, email, phone, password];
 
   @override
   String toString() {
@@ -168,7 +169,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> _mapSignUpToState(SignUpPressed event) async* {
     yield LoginState.loading();
     try {
-      await _userRepo.signUp(event.username, event.email, event.password);
+      await _userRepo.signUp(
+          event.username, event.email, event.phone, event.password);
       yield LoginState.success();
     } on Exception catch (error) {
       yield LoginState.failure(error.toString());

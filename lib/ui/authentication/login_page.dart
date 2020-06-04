@@ -15,10 +15,14 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   GlobalKey<FormState> _loginFormKey = new GlobalKey();
-  FocusNode _passwordFocusNode, _loginFocusNode, _emailFocusNode;
+  FocusNode _passwordFocusNode,
+      _loginFocusNode,
+      _emailFocusNode,
+      _phoneFocusNode;
   bool _isShowPassWord = false;
   TextEditingController _email = TextEditingController(text: "");
   TextEditingController _username = TextEditingController(text: "");
+  TextEditingController _phone = TextEditingController(text: "");
 
   TextEditingController _password = TextEditingController(text: "");
 
@@ -31,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
     _passwordFocusNode = FocusNode();
     _loginFocusNode = FocusNode();
     _emailFocusNode = FocusNode();
+    _phoneFocusNode = FocusNode();
   }
 
   void _showPassWord() {
@@ -49,8 +54,8 @@ class _LoginPageState extends State<LoginPage> {
     if (_loginFormKey.currentState.validate()) {
       _loginFormKey.currentState.save();
       if (!_isLogin) {
-        BlocProvider.of<LoginBloc>(context)
-            .add(SignUpPressed(_username.text, _email.text, _password.text));
+        BlocProvider.of<LoginBloc>(context).add(SignUpPressed(
+            _username.text, _email.text, _phone.text, _password.text));
       } else {
         BlocProvider.of<LoginBloc>(context)
             .add(LoginWithCredentialsPressed(_email.text, _password.text));
@@ -120,7 +125,7 @@ class _LoginPageState extends State<LoginPage> {
                             key: UniqueKey(),
                             controller: _username,
                             onEditingComplete: () => FocusScope.of(context)
-                                .requestFocus(_emailFocusNode),
+                                .requestFocus(_phoneFocusNode),
                             validator: (String value) {
                               return value.isNotEmpty
                                   ? null
@@ -129,8 +134,47 @@ class _LoginPageState extends State<LoginPage> {
                             onSaved: (value) {
                               this._username.text = value;
                             },
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.next,
                             decoration: InputDecoration(
                                 hintText: "Username",
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 13)),
+                          ),
+                        ),
+                      ),
+                    if (!_isLogin)
+                      SizedBox(
+                        height: 30,
+                      ),
+                    if (!_isLogin)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: _horizontalPadding),
+                        child: Material(
+                          color: Color(0xffE4E6E9),
+                          elevation: 2.0,
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          child: TextFormField(
+                            key: UniqueKey(),
+                            controller: _phone,
+                            focusNode: _phoneFocusNode,
+                            onEditingComplete: () => FocusScope.of(context)
+                                .requestFocus(_emailFocusNode),
+                            // Todo add a good phone validation
+                            validator: (String value) {
+                              return value.isNotEmpty
+                                  ? null
+                                  : "Please Enter a Valid Phone Number";
+                            },
+                            onSaved: (value) {
+                              this._phone.text = value;
+                            },
+                            keyboardType: TextInputType.phone,
+                            textInputAction: TextInputAction.next,
+                            decoration: InputDecoration(
+                                hintText: "Phone number",
                                 border: InputBorder.none,
                                 contentPadding: EdgeInsets.symmetric(
                                     horizontal: 25, vertical: 13)),
@@ -162,6 +206,8 @@ class _LoginPageState extends State<LoginPage> {
                           onSaved: (value) {
                             this._email.text = value;
                           },
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
                           decoration: InputDecoration(
                               hintText: " Email",
                               border: InputBorder.none,
@@ -194,6 +240,8 @@ class _LoginPageState extends State<LoginPage> {
                             this._password.text = value;
                           },
                           obscureText: !_isShowPassWord,
+                          keyboardType: TextInputType.text,
+                          textInputAction: TextInputAction.done,
                           decoration: InputDecoration(
                               hintText: "Password",
                               suffixIcon: IconButton(
