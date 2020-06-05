@@ -22,14 +22,17 @@ class ApartmentApiService {
     }
   }
 
-  static Future<void> updateApartment(
+  static Future<Apartment> updateApartment(
       Apartment apartment, Map<String, dynamic> updateData) async {
     await apartment.reference.updateData(updateData);
+
+    return getApartment(apartment.apartmentId);
   }
 
-  static Future<void> saveApartment(Apartment apartment) async {
+  static Future<Apartment> saveApartment(Apartment apartment) async {
     DocumentReference newApartmentRef = apartmentDBReference.document();
     await newApartmentRef.setData(apartment.toMap());
+    return getApartment(newApartmentRef.documentID);
   }
 
   static Future<List<Apartment>> getAllApartments(

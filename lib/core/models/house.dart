@@ -2,15 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:roommatematcher/core/models/user.dart';
 
 class Apartment {
-  final String titleText, description;
-  String apartmentId;
-  final num price;
+  String titleText, description;
+  final String apartmentId;
+  num price;
 
   // TODO: Change to location instance so distance can be calculated
-  final GeoPoint location;
+  GeoPoint location;
   final User owner;
-  final DateTime dateTime;
-  final List<String> amenities, rules, imageUrls;
+  DateTime dateTime;
+  List<String> amenities, rules, imageUrls;
   final DocumentReference reference;
 
   Apartment(
@@ -18,13 +18,15 @@ class Apartment {
       this.apartmentId,
       this.price,
       this.location: const GeoPoint(1, 1),
-      this.amenities: const [],
+      this.amenities,
       this.dateTime,
       this.owner,
       this.titleText: '-',
       this.description,
-      this.rules: const [],
-      this.imageUrls});
+      this.rules,
+      this.imageUrls}) {
+ this.rules = rules ?? [];  this.amenities = amenities ?? [];
+}
 
   Apartment.fromMap(Map data, {this.apartmentId, this.reference, this.owner})
       : price = data['price'],
@@ -34,7 +36,7 @@ class Apartment {
         titleText = data['titleText'],
         description = data['description'],
         rules = List<String>.from(data['rules']),
-        imageUrls = List<String>.from(data['imageUrls']);
+        imageUrls = List<String>.from(data['imageUrls'] ?? []);
 
   Apartment.fromSnapshot(DocumentSnapshot snapshot,User owner)
       : this.fromMap(snapshot.data,

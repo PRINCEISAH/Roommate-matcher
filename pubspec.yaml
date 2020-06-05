@@ -25,8 +25,9 @@ dependencies:
   email_validator: ^1.0.4
   google_fonts: ^1.1.0
   multi_image_picker: ^4.6.7
-  dotted_border: ^1.0.5
+  dotted_border: ^1.0.5 # This would probably be removed
   firebase_storage: ^3.1.6
+  provider: ^4.1.2
   url_launcher: ^5.4.10
 
 
