@@ -12,10 +12,10 @@ class ApartmentCreateStep1 extends StatefulWidget {
 
 class _ApartmentCreateStep1State extends State<ApartmentCreateStep1> {
   TextEditingController _entryController;
-  num _maxPriceToAllow = 1000000;
+  num _maxPriceToAllow = 100;
 
   ApartmentProvider apartmentProvider;
-  double value;
+  double value = 0.0;
 
   @override
   initState() {
@@ -47,10 +47,12 @@ class _ApartmentCreateStep1State extends State<ApartmentCreateStep1> {
               horizontal: 20,
             ),
             children: <Widget>[
+              SizedBox(
+                height: 20,
+              ),
               Text(
-                'Now the final and probably most important step. '
-                'PHOTOS of the apartment. Upload admirable '
-                'shots of the apartment. (Add blue, I like blue 😋)',
+                'What\'s the title and price per '
+                'month you want to display for your apartment listing?',
                 style: Theme.of(context).textTheme.headline6.copyWith(
                       color: Colors.blueGrey.shade700,
                       height: 1.4,
@@ -63,37 +65,75 @@ class _ApartmentCreateStep1State extends State<ApartmentCreateStep1> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: TextFormField(
-                      controller: _entryController,
-                      decoration: InputDecoration(
-                        hintText: 'Title',
+                    child: Container(
+                      color: Colors.grey.shade300,
+                      child: TextFormField(
+                        controller: _entryController,
+                        decoration: InputDecoration(
+                          focusColor: Colors.grey,
+                          border: OutlineInputBorder(),
+                          hintText: 'Title',
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
+              SizedBox(
+                height: 30,
+              ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text('Price'),
+                  Text(
+                    'Price',
+                    style: TextStyle(
+                        fontSize: 20, color: Colors.blueGrey.shade700),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Row(
                     children: <Widget>[
                       Text(
                         'N',
                         style: TextStyle(
+                          color: Colors.blueGrey,
+                          fontSize: 30,
                           decoration: TextDecoration.lineThrough,
                           decorationStyle: TextDecorationStyle.double,
                         ),
                       ),
-                      Text("$value"),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: Container(
+                          height: 40,
+                          width: 80,
+                          decoration: BoxDecoration(
+                              color: Colors.grey.shade300,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Center(
+                            child: Text(
+                              "${value.round()},000",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  Slider(value: value, onChanged: (value) {
-                    setState(() {
-                      value = value;
-                      apartmentProvider.price = value;
-                    });
-                  }, min: 0, max: _maxPriceToAllow.toDouble(), divisions: _maxPriceToAllow ~/ 10,),
-                  
+                  Slider(
+                    value: value,
+                    onChanged: (value) {
+                      setState(() {
+                        value = value;
+                        apartmentProvider.price = value;
+                      });
+                    },
+                    min: 0,
+                    max: 500,
+                    divisions: _maxPriceToAllow ~/ 10,
+                  ),
                 ],
               ),
             ],
@@ -108,7 +148,10 @@ class _ApartmentCreateStep1State extends State<ApartmentCreateStep1> {
                   apartmentProvider.goToNext();
                 }
               },
-              child: Text('Next >'),
+              child: Text(
+                'Next >',
+                style: TextStyle(color: Colors.deepOrange),
+              ),
             ),
           ],
         ),

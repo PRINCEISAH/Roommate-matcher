@@ -19,7 +19,8 @@ class _ApartmentCreateStep2State extends State<ApartmentCreateStep2> {
   initState() {
     super.initState();
     apartmentProvider = Provider.of<ApartmentProvider>(widget.context);
-    _descriptionController = TextEditingController(text: apartmentProvider.description);
+    _descriptionController =
+        TextEditingController(text: apartmentProvider.description);
   }
 
   bool validate() {
@@ -38,16 +39,17 @@ class _ApartmentCreateStep2State extends State<ApartmentCreateStep2> {
     return Column(
       children: <Widget>[
         Expanded(
-                  child: ListView(
+          child: ListView(
             padding: const EdgeInsets.symmetric(
               vertical: 64,
               horizontal: 20,
             ),
             children: <Widget>[
+              SizedBox(
+                height: 50,
+              ),
               Text(
-                'Now the final and probably most important step. '
-                'PHOTOS of the apartment. Upload admirable '
-                'shots of the apartment. (Add blue, I like blue 😋)',
+                'Give a detailed description of the apartment.',
                 style: Theme.of(context).textTheme.headline6.copyWith(
                       color: Colors.blueGrey.shade700,
                       height: 1.4,
@@ -60,11 +62,16 @@ class _ApartmentCreateStep2State extends State<ApartmentCreateStep2> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: TextFormField(
-                      controller: _descriptionController,
-                      maxLines: 6,
-                      decoration: InputDecoration(
-                        hintText: 'Description',
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade300,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: TextFormField(
+                        controller: _descriptionController,
+                        maxLines: 6,
+                        decoration: InputDecoration(
+                          hintText: 'Description',
+                        ),
                       ),
                     ),
                   ),
@@ -77,10 +84,14 @@ class _ApartmentCreateStep2State extends State<ApartmentCreateStep2> {
           children: <Widget>[
             FlatButton(
               onPressed: () {
-                apartmentProvider.description = _descriptionController.text.trim();
+                apartmentProvider.description =
+                    _descriptionController.text.trim();
                 apartmentProvider.goToPrevious();
               },
-              child: Text('< Prev'),
+              child: Text(
+                '< Prev',
+                style: TextStyle(color: Colors.deepOrange),
+              ),
             ),
             Spacer(),
             FlatButton(
@@ -89,7 +100,10 @@ class _ApartmentCreateStep2State extends State<ApartmentCreateStep2> {
                   apartmentProvider.goToNext();
                 }
               },
-              child: Text('Next >'),
+              child: Text(
+                'Next >',
+                style: TextStyle(color: Colors.deepOrange),
+              ),
             ),
           ],
         ),

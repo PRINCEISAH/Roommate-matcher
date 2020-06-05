@@ -1,19 +1,15 @@
 import 'package:dotted_border/dotted_border.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:roommatematcher/ui/apartment_create/state/apartment_provider.dart';
 
 class ApartmentCreateStep5 extends StatefulWidget {
   @override
-  _ApartmentCreateStep5State createState() =>
-      _ApartmentCreateStep5State();
+  _ApartmentCreateStep5State createState() => _ApartmentCreateStep5State();
 }
 
 class _ApartmentCreateStep5State extends State<ApartmentCreateStep5> {
-
   Radius _containerRadius = Radius.circular(10);
 
   ApartmentProvider apartmentProvider;
@@ -24,6 +20,7 @@ class _ApartmentCreateStep5State extends State<ApartmentCreateStep5> {
     }
     return false;
   }
+
   @override
   initState() {
     super.initState();
@@ -56,12 +53,15 @@ class _ApartmentCreateStep5State extends State<ApartmentCreateStep5> {
     return Column(
       children: <Widget>[
         Expanded(
-                  child: ListView(
+          child: ListView(
             padding: const EdgeInsets.symmetric(
               vertical: 64,
               horizontal: 20,
             ),
             children: <Widget>[
+              SizedBox(
+                height: 50,
+              ),
               Text(
                 'Now the final and probably most important step. '
                 'PHOTOS of the apartment. Upload admirable '
@@ -93,7 +93,10 @@ class _ApartmentCreateStep5State extends State<ApartmentCreateStep5> {
           children: <Widget>[
             FlatButton(
               onPressed: apartmentProvider.goToPrevious,
-              child: Text('< Prev'),
+              child: Text(
+                '< Prev',
+                style: TextStyle(color: Colors.deepOrange),
+              ),
             ),
             Spacer(),
             FlatButton(

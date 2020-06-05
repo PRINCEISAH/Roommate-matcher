@@ -25,22 +25,24 @@ class _ApartmentCreateStep4State extends State<ApartmentCreateStep4> {
 
     return false;
   }
+
   @override
   Widget build(BuildContext context) {
     apartmentProvider = Provider.of<ApartmentProvider>(context);
     return Column(
       children: <Widget>[
         Expanded(
-                  child: ListView(
+          child: ListView(
             padding: const EdgeInsets.symmetric(
               vertical: 64,
               horizontal: 20,
             ),
             children: <Widget>[
+              SizedBox(
+                height: 50,
+              ),
               Text(
-                'Now the final and probably most important step. '
-                'PHOTOS of the apartment. Upload admirable '
-                'shots of the apartment. (Add blue, I like blue 😋)',
+                "Add the rules you\'d like to enforce in the apartment",
                 style: Theme.of(context).textTheme.headline6.copyWith(
                       color: Colors.blueGrey.shade700,
                       height: 1.4,
@@ -66,7 +68,7 @@ class _ApartmentCreateStep4State extends State<ApartmentCreateStep4> {
                           icon: Icon(Icons.cancel),
                           onPressed: () {
                             setState(() {
-                            apartmentProvider.rules.removeAt(index);                              
+                              apartmentProvider.rules.removeAt(index);
                             });
                           },
                           padding: EdgeInsets.zero,
@@ -90,6 +92,7 @@ class _ApartmentCreateStep4State extends State<ApartmentCreateStep4> {
                     child: TextField(
                       controller: _entryController,
                       decoration: InputDecoration(
+                        border: OutlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: Icon(Icons.add),
                           onPressed: () async {
@@ -114,7 +117,10 @@ class _ApartmentCreateStep4State extends State<ApartmentCreateStep4> {
           children: <Widget>[
             FlatButton(
               onPressed: apartmentProvider.goToPrevious,
-              child: Text('< Prev'),
+              child: Text(
+                '< Prev',
+                style: TextStyle(color: Colors.deepOrange),
+              ),
             ),
             Spacer(),
             FlatButton(
@@ -123,7 +129,10 @@ class _ApartmentCreateStep4State extends State<ApartmentCreateStep4> {
                   apartmentProvider.goToNext();
                 }
               },
-              child: Text('Next >'),
+              child: Text(
+                'Next >',
+                style: TextStyle(color: Colors.deepOrange),
+              ),
             ),
           ],
         ),

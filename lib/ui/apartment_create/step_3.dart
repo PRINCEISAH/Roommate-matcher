@@ -25,22 +25,24 @@ class _ApartmentCreateStep3State extends State<ApartmentCreateStep3> {
 
     return false;
   }
+
   @override
   Widget build(BuildContext context) {
     apartmentProvider = Provider.of<ApartmentProvider>(context);
     return Column(
       children: <Widget>[
         Expanded(
-                  child: ListView(
+          child: ListView(
             padding: const EdgeInsets.symmetric(
               vertical: 64,
               horizontal: 20,
             ),
             children: <Widget>[
+              SizedBox(
+                height: 50,
+              ),
               Text(
-                'Now the final and probably most important step. '
-                'PHOTOS of the apartment. Upload admirable '
-                'shots of the apartment. (Add blue, I like blue 😋)',
+                "Now let\'s get the amenities in the apartment. List as many as you can lay your eyes on.(Add your light bulb too)",
                 style: Theme.of(context).textTheme.headline6.copyWith(
                       color: Colors.blueGrey.shade700,
                       height: 1.4,
@@ -66,7 +68,7 @@ class _ApartmentCreateStep3State extends State<ApartmentCreateStep3> {
                           icon: Icon(Icons.cancel),
                           onPressed: () {
                             setState(() {
-                            apartmentProvider.amenities.removeAt(index);                              
+                              apartmentProvider.amenities.removeAt(index);
                             });
                           },
                           padding: EdgeInsets.zero,
@@ -87,21 +89,24 @@ class _ApartmentCreateStep3State extends State<ApartmentCreateStep3> {
               Row(
                 children: <Widget>[
                   Expanded(
-                    child: TextField(
-                      controller: _entryController,
-                      decoration: InputDecoration(
-                        suffixIcon: IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () async {
-                            String content = _entryController.text.trim();
-                            if (content != '') {
-                              setState(() {
-                                apartmentProvider.amenities
-                                    .add(content);
-                                _entryController.clear();
-                              });
-                            }
-                          },
+                    child: Container(
+                      color: Colors.grey.shade300,
+                      child: TextField(
+                        controller: _entryController,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(Icons.add),
+                            onPressed: () async {
+                              String content = _entryController.text.trim();
+                              if (content != '') {
+                                setState(() {
+                                  apartmentProvider.amenities.add(content);
+                                  _entryController.clear();
+                                });
+                              }
+                            },
+                          ),
                         ),
                       ),
                     ),
@@ -115,7 +120,10 @@ class _ApartmentCreateStep3State extends State<ApartmentCreateStep3> {
           children: <Widget>[
             FlatButton(
               onPressed: apartmentProvider.goToPrevious,
-              child: Text('< Prev'),
+              child: Text(
+                '< Prev',
+                style: TextStyle(color: Colors.deepOrange),
+              ),
             ),
             Spacer(),
             FlatButton(
@@ -124,7 +132,10 @@ class _ApartmentCreateStep3State extends State<ApartmentCreateStep3> {
                   apartmentProvider.goToNext();
                 }
               },
-              child: Text('Next >'),
+              child: Text(
+                'Next >',
+                style: TextStyle(color: Colors.deepOrange),
+              ),
             ),
           ],
         ),

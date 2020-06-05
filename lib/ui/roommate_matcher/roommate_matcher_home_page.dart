@@ -2,15 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:roommatematcher/core/api_services/apartment_api_services.dart';
 import 'package:roommatematcher/core/blocs/auth_bloc.dart';
 import 'package:roommatematcher/ui/apartment_create/apartment_create.dart';
 import 'package:roommatematcher/ui/apartment_create/state/apartment_provider.dart';
 import 'package:roommatematcher/ui/chat/chat_list_screen.dart';
-//import 'package:roommatematcher/core/models/house.dart';
-//import 'package:roommatematcher/ui/roommate_matcher/apartment_details_page.dart';
 import 'package:roommatematcher/ui/roommate_matcher/search_results.dart';
 import 'package:roommatematcher/utils/circular_progress_loading.dart';
-import 'package:roommatematcher/core/api_services/apartment_api_services.dart';
 
 class RoommateMatcherHomePage extends StatefulWidget {
   @override
@@ -192,7 +190,11 @@ class _RoommateMatcherHomePageState extends State<RoommateMatcherHomePage> {
                     ),
                     Center(
                       child: RaisedButton(
-                        child: Text('Create apartment'),
+                        color: Colors.deepOrange,
+                        child: Text(
+                          'Create apartment',
+                          style: TextStyle(color: Colors.white),
+                        ),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) =>

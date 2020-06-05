@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:roommatematcher/core/blocs/auth_bloc.dart';
 import 'package:roommatematcher/core/models/chat.dart';
-import 'package:roommatematcher/core/models/user.dart';
 import 'package:roommatematcher/core/models/house.dart';
+import 'package:roommatematcher/core/models/user.dart';
 import 'package:roommatematcher/ui/chat/chat_screen.dart';
 
 class TopDisplay extends StatefulWidget {
@@ -166,7 +166,7 @@ class _DetailPageState extends State<DetailPage> {
             ],
             flexibleSpace: FlexibleSpaceBar(
               background: TopDisplay(
-                price: '${this.widget.apartment.price}/month',
+                price: '${this.widget.apartment.price}00/month',
                 imageUrl: this.widget.apartment.imageUrl,
               ),
             ),
