@@ -3,21 +3,24 @@ import 'package:provider/provider.dart';
 import 'package:roommatematcher/ui/apartment_create/state/apartment_provider.dart';
 
 class ApartmentCreateStep1 extends StatefulWidget {
+  final BuildContext context;
+
+  const ApartmentCreateStep1({Key key, this.context}) : super(key: key);
   @override
   _ApartmentCreateStep1State createState() => _ApartmentCreateStep1State();
 }
 
 class _ApartmentCreateStep1State extends State<ApartmentCreateStep1> {
   TextEditingController _entryController;
+  num _maxPriceToAllow = 1000000;
 
   ApartmentProvider apartmentProvider;
-  RangeValues _rangeValues;
+  double value;
 
   @override
   initState() {
     super.initState();
-    apartmentProvider = Provider.of<ApartmentProvider>(context);
-    _rangeValues = RangeValues(0, apartmentProvider.price ?? 0);
+    apartmentProvider = Provider.of<ApartmentProvider>(widget.context);
     _entryController = TextEditingController(text: apartmentProvider.titleText);
   }
 
@@ -33,67 +36,68 @@ class _ApartmentCreateStep1State extends State<ApartmentCreateStep1> {
 
   @override
   Widget build(BuildContext context) {
+    apartmentProvider = Provider.of<ApartmentProvider>(context);
+    value = apartmentProvider.price ?? 0;
     return Column(
       children: <Widget>[
-        ListView(
-          padding: const EdgeInsets.symmetric(
-            vertical: 64,
-            horizontal: 20,
-          ),
-          children: <Widget>[
-            Text(
-              'Now the final and probably most important step. '
-              'PHOTOS of the apartment. Upload admirable '
-              'shots of the apartment. (Add blue, I like blue 😋)',
-              style: Theme.of(context).textTheme.headline6.copyWith(
-                    color: Colors.blueGrey.shade700,
-                    height: 1.4,
-                  ),
-              textAlign: TextAlign.center,
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.symmetric(
+              vertical: 64,
+              horizontal: 20,
             ),
-            SizedBox(
-              height: 50,
-            ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _entryController,
-                    decoration: InputDecoration(
-                      hintText: 'Title',
+            children: <Widget>[
+              Text(
+                'Now the final and probably most important step. '
+                'PHOTOS of the apartment. Upload admirable '
+                'shots of the apartment. (Add blue, I like blue 😋)',
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                      color: Colors.blueGrey.shade700,
+                      height: 1.4,
                     ),
-                  ),
-                ),
-              ],
-            ),
-            Column(
-              children: <Widget>[
-                Text('Price'),
-                Row(
-                  children: <Widget>[
-                    Text(
-                      'N',
-                      style: TextStyle(
-                        decoration: TextDecoration.lineThrough,
-                        decorationStyle: TextDecorationStyle.double,
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Row(
+                children: <Widget>[
+                  Expanded(
+                    child: TextFormField(
+                      controller: _entryController,
+                      decoration: InputDecoration(
+                        hintText: 'Title',
                       ),
                     ),
-                    Text("${_rangeValues.end}"),
-                  ],
-                ),
-                RangeSlider(
-                  values: _rangeValues,
-                  onChanged: (RangeValues values) {
+                  ),
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  Text('Price'),
+                  Row(
+                    children: <Widget>[
+                      Text(
+                        'N',
+                        style: TextStyle(
+                          decoration: TextDecoration.lineThrough,
+                          decorationStyle: TextDecorationStyle.double,
+                        ),
+                      ),
+                      Text("$value"),
+                    ],
+                  ),
+                  Slider(value: value, onChanged: (value) {
                     setState(() {
-                      _rangeValues = values;
-                      apartmentProvider.price = values.end;
+                      value = value;
+                      apartmentProvider.price = value;
                     });
-                  },
-                  max: 1000000,
-                ),
-              ],
-            ),
-          ],
+                  }, min: 0, max: _maxPriceToAllow.toDouble(), divisions: _maxPriceToAllow ~/ 10,),
+                  
+                ],
+              ),
+            ],
+          ),
         ),
         Row(
           children: <Widget>[

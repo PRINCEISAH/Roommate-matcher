@@ -15,20 +15,24 @@ class ApartmentCreate extends StatefulWidget {
 class _ApartmentCreateState extends State<ApartmentCreate> {
   Widget _buildProgressBar(BuildContext context, ApartmentProvider apartmentProvider, Widget child) {
     num currPage = apartmentProvider.currentPage;
-    return Row(
-      children: List.generate(9, (index) {
-        if (index % 2 != 0) {
-          return Expanded(
-            child: Divider(),
+    return Container(
+      color: Colors.white,
+      child: Row(
+        children: List.generate(9, (index) {
+          if (index % 2 != 0) {
+            return Expanded(
+              child: Divider(),
+            );
+          }
+          int prog = index ~/ 2 + 1;
+          return CircleAvatar(
+            radius: 20,
+            child: Text('$prog'),
+            backgroundColor: prog <= currPage ? Colors.green : Colors.grey,
+            foregroundColor: Colors.white,
           );
-        }
-        int prog = index ~/ 2 + 1;
-        return CircleAvatar(
-          radius: 10,
-          child: Text('$prog'),
-          backgroundColor: prog <= currPage ? Colors.green : Colors.grey,
-        );
-      }),
+        }),
+      ),
     );
   }
 
@@ -41,8 +45,8 @@ class _ApartmentCreateState extends State<ApartmentCreate> {
           children: <Widget>[
             PageView(
               children: <Widget>[
-                ApartmentCreateStep1(),
-                ApartmentCreateStep2(),
+                ApartmentCreateStep1(context: context,),
+                ApartmentCreateStep2(context: context,),
                 ApartmentCreateStep3(),
                 ApartmentCreateStep4(),
                 ApartmentCreateStep5(),

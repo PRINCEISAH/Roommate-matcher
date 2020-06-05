@@ -247,6 +247,7 @@ class _ApartmentDescriptionState extends State<ApartmentDescriptionWidget> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         InkWell(
           onTap: () {
@@ -288,7 +289,7 @@ class AmenitiesWidget extends StatelessWidget {
           columnCount: 2,
           children: this
               .amenities
-              .map((item) => Row(
+              .map<Widget>((item) => Row(
                     children: <Widget>[
                       Icon(Icons.check),
                       Padding(
@@ -317,6 +318,7 @@ class AmenityGridView extends StatelessWidget {
     List<Widget> _columnChildren = [];
 
     if (this.children.length % columnCount != 0) {
+      print(this.children.runtimeType);
       this.children.addAll(List.generate(
           this.children.length % columnCount, (index) => Container()));
     }
@@ -354,7 +356,7 @@ class HouseRulesWidget extends StatelessWidget {
         AmenityGridView(
           children: this
               .rules
-              .map((rule) => Row(
+              .map<Widget>((rule) => Row(
                     children: <Widget>[
                       Icon(Icons.priority_high),
                       Padding(

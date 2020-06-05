@@ -36,7 +36,7 @@ class Apartment {
         titleText = data['titleText'],
         description = data['description'],
         rules = List<String>.from(data['rules']),
-        imageUrls = List<String>.from(data['imageUrls']);
+        imageUrls = List<String>.from(data['imageUrls'] ?? []);
 
   Apartment.fromSnapshot(DocumentSnapshot snapshot,User owner)
       : this.fromMap(snapshot.data,

@@ -27,7 +27,6 @@ class _ApartmentCreateStep5State extends State<ApartmentCreateStep5> {
   @override
   initState() {
     super.initState();
-    apartmentProvider = Provider.of<ApartmentProvider>(context);
   }
 
   void _pickImages() async {
@@ -53,39 +52,42 @@ class _ApartmentCreateStep5State extends State<ApartmentCreateStep5> {
 
   @override
   Widget build(BuildContext context) {
+    apartmentProvider = Provider.of<ApartmentProvider>(context);
     return Column(
       children: <Widget>[
-        ListView(
-          padding: const EdgeInsets.symmetric(
-            vertical: 64,
-            horizontal: 20,
-          ),
-          children: <Widget>[
-            Text(
-              'Now the final and probably most important step. '
-              'PHOTOS of the apartment. Upload admirable '
-              'shots of the apartment. (Add blue, I like blue 😋)',
-              style: Theme.of(context).textTheme.headline6.copyWith(
-                    color: Colors.blueGrey.shade700,
-                    height: 1.4,
-                  ),
-              textAlign: TextAlign.center,
+        Expanded(
+                  child: ListView(
+            padding: const EdgeInsets.symmetric(
+              vertical: 64,
+              horizontal: 20,
             ),
-            SizedBox(
-              height: 50,
-            ),
-            GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 10,
-                crossAxisSpacing: 10,
+            children: <Widget>[
+              Text(
+                'Now the final and probably most important step. '
+                'PHOTOS of the apartment. Upload admirable '
+                'shots of the apartment. (Add blue, I like blue 😋)',
+                style: Theme.of(context).textTheme.headline6.copyWith(
+                      color: Colors.blueGrey.shade700,
+                      height: 1.4,
+                    ),
+                textAlign: TextAlign.center,
               ),
-              itemBuilder: buildGridItem,
-              shrinkWrap: true,
-              itemCount: apartmentProvider.selectedPhotos.length + 1,
-              primary: false,
-            )
-          ],
+              SizedBox(
+                height: 50,
+              ),
+              GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                ),
+                itemBuilder: buildGridItem,
+                shrinkWrap: true,
+                itemCount: apartmentProvider.selectedPhotos.length + 1,
+                primary: false,
+              )
+            ],
+          ),
         ),
         Row(
           children: <Widget>[
@@ -97,7 +99,7 @@ class _ApartmentCreateStep5State extends State<ApartmentCreateStep5> {
             FlatButton(
               onPressed: () {
                 if (this.validate()) {
-                  apartmentProvider.completeCreation();
+                  apartmentProvider.completeCreation(context);
                 }
               },
               color: Colors.deepOrange,

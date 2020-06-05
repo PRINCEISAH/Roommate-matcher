@@ -4,50 +4,71 @@ import 'package:flutter/services.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:roommatematcher/core/api_services/apartment_api_services.dart';
 import 'package:roommatematcher/core/models/house.dart';
+import 'package:roommatematcher/core/repository/user_repository.dart';
+import 'package:roommatematcher/ui/roommate_matcher/apartment_details_page.dart';
 
 class ApartmentProvider with ChangeNotifier {
-  Apartment _createApartment;
-  int _currentPage = 0;
-  ApartmentProvider();
-  final PageController _pageViewController = PageController();
+  UserRepository _userRepository = UserRepository();
+  num _currentPage = 0;
+  PageController pageViewController = PageController();
   List<Asset> selectedPhotos = <Asset>[];
   String titleText, description;
   num price;
-  List<String> amenities, rules;
+  List<String> amenities = [], rules = [];
 
-  PageController get pageViewController => _pageViewController;
+  Future<List<String>> _uploadImages(String apartmentId) async {
+    List<String> downloadUrls = [];
 
-  Future<void> _uploadImages() async {
-    for (Asset asset in selectedPhotos) {
+    for (var i = 0; i < selectedPhotos.length; i++) {
+      Asset asset = selectedPhotos[i];
       ByteData imageByteData = await asset.getByteData();
       List<int> uploadData = imageByteData.buffer.asUint8List();
-      StorageReference uploadReference = FirebaseStorage.instance.ref().child('images').child('im-${asset.name}');
+      StorageReference uploadReference = FirebaseStorage.instance.ref().child('images').child('$apartmentId-$i');
       StorageUploadTask uploadTask = uploadReference.putData(uploadData);
 
 
       await uploadTask.onComplete;
       var downloadUrl = await uploadReference.getDownloadURL();
-      _createApartment.imageUrls.add(downloadUrl);
+      downloadUrls.add(downloadUrl);
     }
+
+    return downloadUrls;
   }
 
-  Future<void> completeCreation() async {
-    print('Completing creation here\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Completed');
-    // await _uploadImages();
-    // await ApartmentApiService.saveApartment(_createApartment);
+  Future<void> completeCreation(BuildContext context) async {
+    print('Completing creation here');
+    Apartment newApartment = Apartment(
+      price: price,
+      amenities: amenities,
+      dateTime: DateTime.now(),
+      owner: await _userRepository.getCurrentUser(),
+      titleText: titleText,
+      description: description,
+      rules: rules,
+    );
+
+    newApartment = await ApartmentApiService.saveApartment(newApartment);
+
+    newApartment = await ApartmentApiService.updateApartment(newApartment, {
+      'imageUrls': await _uploadImages(newApartment.apartmentId),
+    });
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Completed");
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (BuildContext context) {
+      return DetailPage(apartment: newApartment,);
+    }),);
   }
 
   Future goToPrevious() async {
-    await _pageViewController.previousPage(duration: Duration(milliseconds: 500,), curve: Curves.easeInOut);
-    _currentPage =  _pageViewController.page as int;
+    await pageViewController.previousPage(duration: Duration(milliseconds: 500,), curve: Curves.easeInOut);
+    _currentPage =  pageViewController.page;
     notifyListeners();
   }
 
   Future goToNext() async {
-    await _pageViewController.nextPage(duration: Duration(milliseconds: 500,), curve: Curves.easeInOut);
-    _currentPage =  _pageViewController.page as int;
+    await pageViewController.nextPage(duration: Duration(milliseconds: 500,), curve: Curves.easeInOut);
+    _currentPage =  pageViewController.page;
     notifyListeners();
   }
 
-  int get currentPage => _currentPage;
+  num get currentPage => _currentPage;
 }
