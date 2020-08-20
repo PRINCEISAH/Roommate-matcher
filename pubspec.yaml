@@ -14,18 +14,31 @@ description: A new Flutter application.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
-  firebase_core: ^0.4.4+3
   firebase_auth: ^0.16.0
   cloud_firestore: ^0.13.5
+  google_sign_in: ^4.4.6
+  flutter_bloc: ^4.0.0
+  equatable: ^1.1.1
+  email_validator: ^1.0.4
+  google_fonts: ^1.1.0
+  multi_image_picker: ^4.6.7
+  dotted_border: ^1.0.5 # This would probably be removed
+  firebase_storage: ^3.1.6
+  provider: ^4.1.2
+  url_launcher: ^5.4.10
+
+
+
   flutter:
     sdk: flutter
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+
 
 dev_dependencies:
   flutter_test:
@@ -43,10 +56,11 @@ flutter:
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #  - images/a_dot_burr.jpeg
-  #  - images/a_dot_ham.jpeg
+
+  assets:
+    - Icons/
+
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
